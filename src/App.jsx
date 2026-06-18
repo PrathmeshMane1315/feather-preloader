@@ -7,14 +7,14 @@ function App() {
   return (
     <>
       {loading && <PeacockPreloader onComplete={() => setLoading(false)} />}
-      
+
       <div
         style={{
           opacity: loading ? 0 : 1,
           transition: "opacity 1.5s ease-out",
           minHeight: "100vh",
-          background: "#000000",
-          color: "#fff",
+          background: "#ffffff",
+          color: "#000",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -28,7 +28,7 @@ function App() {
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
         }}>
-          Welcome to Krishalaa
+         
         </h1>
       </div>
     </>

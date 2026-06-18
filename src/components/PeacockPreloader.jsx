@@ -18,20 +18,23 @@ export default function PeacockPreloader({ onComplete }) {
       onComplete: () => setShowText(true)
     });
 
+    // Initial position - right side se aayega
     gsap.set(featherEl, {
-      x: window.innerWidth * 0.5,
-      y: window.innerHeight * 0.4,
-      rotation: 45,
+      x: window.innerWidth * 0.9,
+      y: window.innerHeight * 0.6,
+      rotation: 43,
       scale: 0.2,
       opacity: 0,
     });
 
+    // Step 1: Feather appear with scale
     tl.to(featherEl, {
       opacity: 1,
       scale: 1,
       duration: 0.8,
       ease: "power2.out",
     })
+    // Step 2: Feather moves across screen (existing movement)
     .to(featherEl, {
       x: -window.innerWidth * 0.4,
       y: -window.innerHeight * 0.3,
@@ -39,12 +42,24 @@ export default function PeacockPreloader({ onComplete }) {
       duration: 3,
       ease: "power1.inOut",
     }, "+=0.3")
+    // Step 3: 🔥 Feather moves to top of "K" letter (shifted left)
     .to(featherEl, {
-      opacity: 0,
-      scale: 0.3,
-      duration: 0.6,
-      ease: "power2.in",
-    }, "-=0.5");
+      x: -80,
+      y: -55,
+      rotation: -75,
+      scale: 0.18,
+      duration: 1.5,
+      ease: "power2.inOut",
+    })
+    // Step 4: 🔥 Final settle - feather on top of "K" head
+    .to(featherEl, {
+      x: -99,
+      y: -151,
+      rotation: -70,
+      scale: 0.15,
+      duration: 0.8,
+      ease: "back.out(1.2)",
+    });
 
     return () => { tl.kill(); };
   }, []);
@@ -65,7 +80,7 @@ export default function PeacockPreloader({ onComplete }) {
           gsap.to(containerRef.current, {
             opacity: 0,
             duration: 1.5,
-            delay: 2,
+            delay: 3,
             ease: "power2.inOut",
             onComplete: () => { if (onComplete) onComplete(); }
           });
@@ -131,12 +146,18 @@ export default function PeacockPreloader({ onComplete }) {
         <div ref={textRef} className="brand-text-container">
           <div className="brand-text">
             {brandName.split('').map((letter, index) => (
-              <span key={index} className="letter" style={{ '--i': index }}>
+              <span 
+                key={index} 
+                className="letter" 
+                style={{ 
+                  '--i': index,
+                  '--rotate': index === 0 ? '-15deg' : `${(index % 2 === 0 ? 1 : -1) * (Math.random() * 10 + 5)}deg`
+                }}
+              >
                 {letter}
               </span>
             ))}
           </div>
-          <div className="brand-subtitle">Elegance Redefined</div>
         </div>
       )}
 
