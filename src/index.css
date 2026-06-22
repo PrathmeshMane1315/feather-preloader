@@ -1,10 +1,130 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: auto; }
 
 body {
-  background: #000000;
+  font-family: 'Inter', sans-serif;
+  background-color: #faf8f5;
+  color: #2d2d2d;
   overflow-x: hidden;
+  width: 100%;
+}
+
+/* Prevent horizontal scroll on all devices */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #faf8f5; }
+::-webkit-scrollbar-thumb { background: #c9a227; border-radius: 4px; }
+
+/* Hide scrollbar on mobile */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar { width: 0px; }
+}
+
+.font-display { font-family: 'Playfair Display', serif; }
+
+.text-gradient {
+  background: linear-gradient(135deg, #1a1a5e 0%, #c9a227 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.product-card {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* Only apply hover lift on non-touch devices */
+@media (hover: hover) {
+  .product-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 25px 50px -12px rgba(26, 26, 94, 0.15);
+  }
+}
+
+.img-zoom {
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (hover: hover) {
+  .img-zoom:hover { transform: scale(1.08); }
+}
+
+.underline-animate { position: relative; }
+.underline-animate::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 0; height: 2px;
+  background: #c9a227;
+  transition: width 0.3s ease;
+}
+@media (hover: hover) {
+  .underline-animate:hover::after { width: 100%; }
+}
+
+.reveal-section {
+  opacity: 0;
+  transform: translateY(60px);
+}
+
+::selection {
+  background: #c9a227;
+  color: white;
+}
+
+/* ===== MOBILE TOUCH IMPROVEMENTS ===== */
+button, a {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Safe area support for notched phones */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Responsive container helper */
+.container-responsive {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-responsive {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-responsive {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Fix for backgroundAttachment:fixed on iOS */
+@supports (-webkit-touch-callout: none) {
+  .fixed-bg {
+    background-attachment: scroll !important;
+  }
 }

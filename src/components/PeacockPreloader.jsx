@@ -14,55 +14,89 @@ export default function PeacockPreloader({ onComplete }) {
     if (!featherRef.current || !containerRef.current) return;
 
     const featherEl = featherRef.current;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    // Responsive final position — feather must land on top of "K"
+    // K font-size scales with vw, so offsets scale with viewport too
+    let finalX, finalY, finalScale, midX, midY, midScale;
+
+    if (w <= 360) {
+      // Extra small phones
+      finalX = -28; finalY = -72; finalScale = 0.07;
+      midX   = -20; midY  = -30; midScale = 0.10;
+    } else if (w <= 480) {
+      // Small phones
+      finalX = -36; finalY = -88; finalScale = 0.08;
+      midX   = -25; midY  = -38; midScale = 0.12;
+    } else if (w <= 640) {
+      // Large phones / small phablet
+      finalX = -52; finalY = -108; finalScale = 0.09;
+      midX   = -38; midY  = -50;  midScale = 0.13;
+    } else if (w <= 768) {
+      // Small tablets / landscape phone
+      finalX = -65; finalY = -120; finalScale = 0.10;
+      midX   = -48; midY  = -55;  midScale = 0.14;
+    } else if (w <= 1024) {
+      // Tablets
+      finalX = -80; finalY = -135; finalScale = 0.12;
+      midX   = -65; midY  = -60;  midScale = 0.16;
+    } else {
+      // Desktop (original values)
+      finalX = -99; finalY = -151; finalScale = 0.15;
+      midX   = -80; midY  = -55;  midScale = 0.18;
+    }
+
     const tl = gsap.timeline({
       onComplete: () => setShowText(true)
     });
 
-    // Initial position - right side se aayega
+    // Initial position — enters from right side
     gsap.set(featherEl, {
-      x: window.innerWidth * 0.9,
-      y: window.innerHeight * 0.6,
+      x: w * 0.9,
+      y: h * 0.6,
       rotation: 43,
       scale: 0.2,
       opacity: 0,
     });
 
-    // Step 1: Feather appear with scale
+    // Step 1: Feather appears
     tl.to(featherEl, {
       opacity: 1,
       scale: 1,
       duration: 0.8,
-      ease: "power2.out",
+      ease: 'power2.out',
     })
-    // Step 2: Feather moves across screen (existing movement)
+    // Step 2: Sweeps across screen
     .to(featherEl, {
-      x: -window.innerWidth * 0.4,
-      y: -window.innerHeight * 0.3,
+      x: -w * 0.4,
+      y: -h * 0.3,
       rotation: -20,
       duration: 3,
-      ease: "power1.inOut",
-    }, "+=0.3")
-    // Step 3: 🔥 Feather moves to top of "K" letter (shifted left)
+      ease: 'power1.inOut',
+    }, '+=0.3')
+    // Step 3: Approaches K top
     .to(featherEl, {
-      x: -80,
-      y: -55,
+      x: midX,
+      y: midY,
       rotation: -75,
-      scale: 0.18,
+      scale: midScale,
       duration: 1.5,
-      ease: "power2.inOut",
+      ease: 'power2.inOut',
     })
-    // Step 4: 🔥 Final settle - feather on top of "K" head
+    // Step 4: Settles on K
     .to(featherEl, {
-      x: -99,
-      y: -151,
+      x: finalX,
+      y: finalY,
       rotation: -70,
-      scale: 0.15,
+      scale: finalScale,
       duration: 0.8,
-      ease: "back.out(1.2)",
+      ease: 'back.out(1.2)',
     });
 
     return () => { tl.kill(); };
   }, []);
+
 
   useEffect(() => {
     if (!showText || !textRef.current) return;
@@ -77,17 +111,20 @@ export default function PeacockPreloader({ onComplete }) {
         stagger: 0.12,
         ease: "back.out(1.7)",
         onComplete: () => {
+          // 🔥 FIX: Delay kam kar diya 3s se 0.5s
           gsap.to(containerRef.current, {
             opacity: 0,
             duration: 1.5,
-            delay: 3,
+            delay: 0.5, // 3 ki jagah 0.5
             ease: "power2.inOut",
-            onComplete: () => { if (onComplete) onComplete(); }
+            onComplete: () => { 
+              if (onComplete) onComplete(); 
+            }
           });
         }
       }
     );
-  }, [showText, onComplete]);
+  }, [showText, onComplete]); // ✅ showShow ki jagah showText
 
   useEffect(() => {
     if (!sparkleContainerRef.current || !showText) return;
